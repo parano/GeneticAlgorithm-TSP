@@ -29,9 +29,31 @@ Array.prototype.previous = function (index) {
     }
 }
 Array.prototype.swap = function (x, y) {
+    if(x>this.length || y>this.length || x === y) {return}
     var tem = this[x];
     this[x] = this[y];
     this[y] = tem;
+}
+Array.prototype.roll = function () {
+    var rand = randomNumber(this.length);
+    var tem = [];
+    for(var i = rand; i<this.length; i++) {
+	tem.push(this[i]);
+    }
+    for(var i = 0; i<rand; i++) {
+	tem.push(this[i]);
+    }
+    return tem;
+}
+Array.prototype.reject = function (array) {
+    return $.map(this,function (ele) {
+	return $.inArray(ele, array) < 0 ? ele : null;
+    })
+}
+function intersect(x, y) {
+    return $.map(x, function (xi) {
+	return $.inArray(xi, y) < 0 ? null : xi;
+    })
 }
 function Point(x, y) {
     this.x = x;
@@ -45,6 +67,7 @@ function randomPoint() {
 }
 function randomNumber(boundary) {
     return parseInt(Math.random() * boundary);
+    //return Math.floor(Math.random() * boundary);
 }
 function distance(p1, p2) {
     return euclidean(p1.x-p2.x, p1.y-p2.y);
@@ -53,14 +76,14 @@ function euclidean(dx, dy) {
     return Math.sqrt(dx*dx + dy*dy);
 }
 function randomIndivial(n) {
-    a = new Array();
+    var a = [];
     for(var i=0; i<n; i++) {
 	a.push(i);
     }
     return a.shuffle();
 }
 function evaluate(indivial) {
-    var sum = 0;
+    sum = 0;
     for(var i=0, j=indivial.length-1; i<j; i++) {
 	sum += dis[indivial[i]][indivial[i+1]];
     }
@@ -91,4 +114,7 @@ function getCurrentBest() {
 	  bestPosition : bestP
 	, bestValue    : currentBestValue
     }
+}
+function seqCompare(a, b) {
+
 }

@@ -12,15 +12,27 @@ function GANextGeneration() {
     selection();
     crossover();
     mutation();
+    //if(currentGeneration%(points.length * 5) == 0) {
+    //    tribulate();
+    //}
     setBestValue();
+}
+function tribulate() {
+    for(var i=0; i<POPULATION_SIZE; i++) {
+    //for(var i=population.length>>1; i<POPULATION_SIZE; i++) {
+	population[i] = randomIndivial(points.length);
+    }	
 }
 function selection() {
     var parents = new Array();
     parents.push(population[currentBest.bestPosition]);
     var initnum = 1;
-    if(currentGeneration > 500) {
-	MUTATION_PROBABILITY = 0.05;
-	parents.push(best);
+    if(currentGeneration > points.length*5) {
+	//MUTATION_PROBABILITY = 0.05;
+	var tem = best.clone();
+	//var tem = population[currentBest.bestPosition].clone();
+	//doMutate(tem);
+	parents.push(tem);
 	initnum = 2;
     }
     setRoulette();
@@ -38,16 +50,37 @@ function crossover() {
     } 
     queue.shuffle();
     for(var i=0, j=queue.length-1; i<j; i+=2) {
-	doCrossover(queue[i], queue[i+1]);
+	if( Math.random() < OX_CROSSOVER_RATE ) {
+	    oxCrossover(queue[i], queue[i+1]);
+	} else {
+	    doCrossover(queue[i], queue[i+1]);
+	}
     }
 }
+function oxCrossover(x, y) {	
+    var px = population[x].roll();
+    var py = population[y].roll();
+
+    var rand = randomNumber(points.length-1) + 1;
+    var pre_x = px.slice(0, rand);
+    var pre_y = py.slice(0, rand);
+
+    var tail_x = px.slice(rand, px.length);
+    var tail_y = py.slice(rand, py.length);
+
+    px = tail_x.concat(pre_x);
+    py = tail_y.concat(pre_y);
+
+    population[x] = pre_y.concat(px.reject(pre_y));
+    population[y] = pre_x.concat(py.reject(pre_x));
+}
 function doCrossover(x, y) {
-    child1 = getX(x, y);
-    child2 = getY(x, y);
+    child1 = getChild('next', x, y);
+    child2 = getChild('previous', x, y);
     population[x] = child1;
     population[y] = child2;
 }
-function getX(x, y) {
+function getChild(fun, x, y) {
     solution = new Array();
     var px = population[x].clone();
     var py = population[y].clone();
@@ -55,8 +88,8 @@ function getX(x, y) {
     var c = px[randomNumber(px.length)];
     solution.push(c);
     while(px.length > 1) {
-	dx = px.next(px.indexOf(c));
-	dy = py.next(py.indexOf(c));
+	dx = px[fun](px.indexOf(c));
+	dy = py[fun](py.indexOf(c));
 	if(dis[c][dx] < dis[c][dy]) {
 	    px.deleteByValue(c);
 	    py.deleteByValue(c);
@@ -68,47 +101,24 @@ function getX(x, y) {
 	}
 	solution.push(c);
     }
-    //solution.push(px[0]);
-    return solution;
-}
-function getY(x, y) {
-    solution = new Array();
-    var px = population[x].clone();
-    var py = population[y].clone();
-    var dx,dy;
-    var c = px[randomNumber(px.length)];
-    solution.push(c);
-    while(px.length > 1) {
-	dx = px.previous(px.indexOf(c));
-	dy = py.previous(py.indexOf(c));
-	if(dis[c][dx] < dis[c][dy]) {
-	    px.deleteByValue(c);
-	    py.deleteByValue(c);
-	    c = dx;
-	} else {
-	    px.deleteByValue(c);
-	    py.deleteByValue(c);
-	    c = dy;
-	}
-	solution.push(c);
-    }
-    //solution.push(px[0]);
     return solution;
 }
 function mutation() {
     for(var i=0; i<POPULATION_SIZE; i++) {
 	if(Math.random() < MUTATION_PROBABILITY) {
-	    doMutate(i);
+	    doMutate(population[i]);
 	}
     }
 }
-function doMutate(index) {
+function doMutate(seq) {
     mutationTimes++;
-    var c = population[index].clone();
-    var m = randomNumber(population[index].length - 1);
-    var n = randomNumber(population[index].length - i) + 1;
-    for(var i=0, j=(n-m)/2; i<j; i++) {
-	population.swap(m+i, m+n-i);
+    // m and n refers to the actual index in the array
+    // m range from 0 to length-5, n range from 4...length-m
+    var m = randomNumber(seq.length - 3); //returns a random number from 0 to length-4 (smaller than length-4+1)
+    var n = randomNumber(seq.length - m -4) + 4;//returns a random number from 4 to length-m
+    // reverse from m to m+n-1
+    for(var i=0, j=Math.floor(n/2); i<j; i++) {
+	seq.swap(m+i, m+n-i-1);
     }
 }
 function setBestValue() {
