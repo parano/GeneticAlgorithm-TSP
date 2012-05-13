@@ -1,20 +1,27 @@
-body {
-    padding: 0px;
-    margin: 0px;
+#canvas {
+    border-radius: 5px;
+    margin-top: 20px;
 }
-
-h1, h2, h3, h4, h5, h6 {
-    margin: 0px;
-    padding: 0px;
-    font-weight: normal;
-}
-
 
 #title {
+    margin-top: 40px;
+    font-size: 42px;
+    display: block;
+    margin-bottom: 9px;
+    letter-spacing: -1px;
 }
 
-#canvas {
-    position: fixed;
-    left: 50px;
-    border-radius: 5px;
+#control_bottons {
+    margin: 10px;
+}
+
+#status {
+    margin: 10px;
+    padding: 15px;
+    text-align: center;
+}
+
+footer {
+    margin-left: -150px;
+    text-align: center;
 }

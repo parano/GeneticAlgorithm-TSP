@@ -105,11 +105,11 @@ function getChild(fun, x, y) {
 function mutation() {
     for(var i=0; i<POPULATION_SIZE; i++) {
 	if(Math.random() < MUTATION_PROBABILITY) {
-	    if(Math.random() > 0.5) {
-		population[i] = pushMutate(population[i]);
-	    } else {
+	    //if(Math.random() > 0.5) {
+		//population[i] = pushMutate(population[i]);
+	    //} else {
 		population[i] = doMutate(population[i]);
-	    }
+	    //}
 	}
     }
 }

@@ -1,7 +1,8 @@
 var canvas, ctx;
-var WIDTH = 300, HEIGHT = 300;
+var WIDTH, HEIGHT;
 var points = [];
 var running;
+var canvasMinX, canvasMaxX, canvasMinY, canvasMaxY;
 
 var POPULATION_SIZE;
 //var MAX_ITERATIONS  = 1000;
@@ -25,17 +26,22 @@ $(function() {
     initData();
     $('#addRandom_btn').click(function() {
 	addRandomPoints(20);
+	$('#status').text("");
+	running = false;
     });
     $('#start_btn').click(function() { 
-	if(points.length !== 0) {
+	if(points.length >= 4) {
 	    initData();
 	    start(); 
+	} else {
+	    alert("add some more points to the map!");
 	}
     });
     $('#clear_btn').click(function() {
-	running === false
+	running === false;
 	initData();
 	points = new Array();
+	$('#status').text("");
     });
     $('#stop_btn').click(function() {
 	if(running === false && currentGeneration !== 0){
@@ -45,21 +51,38 @@ $(function() {
 	}
     });
 });
+
+
 function init() {
     ctx = $('#canvas')[0].getContext("2d");
     WIDTH = $('#canvas').width();
     HEIGHT = $('#canvas').height();
     intervalId = setInterval(draw, 10);
+    init_mouse();
+}
+function init_mouse() {
+    canvasMinX = $("#canvas").offset().left;
+    canvasMaxX = canvasMinX + WIDTH;
+    canvasMinY = $("#canvas").offset().top;
+    canvasMaxY = canvasMinY + HEIGHT;	
+
+    $("canvas").click(function(evt) {
+	if(!running) {
+	    $('#status').text("");
+	    x = evt.pageX - canvasMinX;
+	    y = evt.pageY - canvasMinY;
+	    points.push(new Point(x, y));
+	}
+    });
 }
 function initData() {
     //points = [];
-    points = data100;
     running = false;
 
     POPULATION_SIZE = 30;
     CROSSOVER_PROBABILITY = 0.9;
     MUTATION_PROBABILITY  = 0.01;
-    OX_CROSSOVER_RATE = 0.1;
+    OX_CROSSOVER_RATE = 0.01;
     mutationTimes = 0;
 
     bestValue = undefined;
@@ -72,8 +95,8 @@ function initData() {
     roulette = new Array(POPULATION_SIZE);
 }
 function start() {
-    running = true;
     GAInitialize();
+    running = true;
 }
 function stop() {
     running = false;
@@ -111,8 +134,10 @@ function drawLines(array) {
 function draw() {
     if(running) {
 	GANextGeneration();
-	$('#generation').text("the " + currentGeneration + " generation with " + mutationTimes + " times of mutation.");
-	$('#best_value').text(", best value: " + parseInt(bestValue));
+	$('#status').text("There are " + points.length + " cities in the map, "
+			  +"the No." + currentGeneration + " generation with "
+			  + mutationTimes + " times of mutation. best value: "
+			  + ~~(bestValue));
     }
     clear();
     if (points.length > 0) {
