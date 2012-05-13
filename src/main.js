@@ -1,42 +1,45 @@
 var canvas, ctx;
 var WIDTH = 300, HEIGHT = 300;
-var intervalId = 0;
 var points = [];
 var running;
 
-//var POPULATION_SIZE = 30;
-var POPULATION_SIZE = 50;
-var MAX_ITERATIONS  = 1000;
-var CROSSOVER_PROBABILITY = 0.9;
-var MUTATION_PROBABILITY  = 0.01;
-//var OX_CROSSOVER_RATE = 0.3;
-var OX_CROSSOVER_RATE = 0.1;
+var POPULATION_SIZE;
+//var MAX_ITERATIONS  = 1000;
+var CROSSOVER_PROBABILITY;
+var MUTATION_PROBABILITY;
+var OX_CROSSOVER_RATE;
 
-var mutationTimes = 0;
+var mutationTimes;
 
 var dis;
-var bestValue, best = new Array();
-var currentGeneration = 0;
+var bestValue, best;
+var currentGeneration;
 var currentBest;
-var population = new Array(POPULATION_SIZE);
-var values = new Array(POPULATION_SIZE);
-var fitnessValues = new Array(POPULATION_SIZE);
-var roulette = new Array(POPULATION_SIZE);
+var population;
+var values;
+var fitnessValues;
+var roulette;
 
 $(function() {
     init();
+    initData();
     $('#addRandom_btn').click(function() {
 	addRandomPoints(20);
     });
     $('#start_btn').click(function() { 
-	start(); 
+	if(points.length !== 0) {
+	    initData();
+	    start(); 
+	}
     });
     $('#clear_btn').click(function() {
-	clearAll();
+	running === false
+	initData();
+	points = new Array();
     });
     $('#stop_btn').click(function() {
-	if(running === false){
-	    running = true;
+	if(running === false && currentGeneration !== 0){
+	    goOn();
 	} else {
 	    stop();
 	}
@@ -48,19 +51,35 @@ function init() {
     HEIGHT = $('#canvas').height();
     intervalId = setInterval(draw, 10);
 }
+function initData() {
+    //points = [];
+    points = data100;
+    running = false;
+
+    POPULATION_SIZE = 30;
+    CROSSOVER_PROBABILITY = 0.9;
+    MUTATION_PROBABILITY  = 0.01;
+    OX_CROSSOVER_RATE = 0.1;
+    mutationTimes = 0;
+
+    bestValue = undefined;
+    best = [];
+    currentGeneration = 0;
+    currentBest;
+    population = new Array(POPULATION_SIZE);
+    values = new Array(POPULATION_SIZE);
+    fitnessValues = new Array(POPULATION_SIZE);
+    roulette = new Array(POPULATION_SIZE);
+}
 function start() {
     running = true;
-    //clearInterval(intervalId);
     GAInitialize();
 }
 function stop() {
     running = false;
-    //intervalId = setInterval(draw, 10);
 }
-function clearAll() {
-    while(points.length > 0) { points.pop(); }
-    while(best.length > 0) { best.pop(); }
-    clear();
+function goOn() {
+    running = true;
 }
 function addRandomPoints(number) {
     running = false;
