@@ -2,7 +2,7 @@ var canvas, ctx;
 var WIDTH, HEIGHT;
 var points = [];
 var running;
-var canvasMinX, canvasMaxX, canvasMinY, canvasMaxY;
+var canvasMinX, canvasMinY;
 
 var POPULATION_SIZE;
 //var MAX_ITERATIONS  = 1000;
@@ -61,14 +61,12 @@ function init() {
     init_mouse();
 }
 function init_mouse() {
-    canvasMinX = $("#canvas").offset().left;
-    canvasMaxX = canvasMinX + WIDTH;
-    canvasMinY = $("#canvas").offset().top;
-    canvasMaxY = canvasMinY + HEIGHT;	
-
     $("canvas").click(function(evt) {
 	if(!running) {
+	    canvasMinX = $("#canvas").offset().left;
+	    canvasMinY = $("#canvas").offset().top;
 	    $('#status').text("");
+
 	    x = evt.pageX - canvasMinX;
 	    y = evt.pageY - canvasMinY;
 	    points.push(new Point(x, y));
@@ -82,7 +80,7 @@ function initData() {
     POPULATION_SIZE = 30;
     CROSSOVER_PROBABILITY = 0.9;
     MUTATION_PROBABILITY  = 0.01;
-    OX_CROSSOVER_RATE = 0.01;
+    OX_CROSSOVER_RATE = 0.03;
     mutationTimes = 0;
 
     bestValue = undefined;
