@@ -1,15 +1,16 @@
 var canvas, ctx;
 var WIDTH = 300, HEIGHT = 300;
 var intervalId = 0;
-var points = new Array();
+var points = [];
 var running;
 
-var POPULATION_SIZE = 30;
+//var POPULATION_SIZE = 30;
+var POPULATION_SIZE = 50;
 var MAX_ITERATIONS  = 1000;
 var CROSSOVER_PROBABILITY = 0.9;
 var MUTATION_PROBABILITY  = 0.01;
 //var OX_CROSSOVER_RATE = 0.3;
-var OX_CROSSOVER_RATE = 0.0;
+var OX_CROSSOVER_RATE = 0.1;
 
 var mutationTimes = 0;
 
@@ -74,19 +75,17 @@ function drawCircle(point) {
     ctx.closePath();
     ctx.fill();
 }
-function drawLines() {
-    //ctx.fillStyle   = '#00f';
+function drawLines(array) {
     ctx.strokeStyle = '#f00';
     ctx.lineWidth = 2;
     ctx.beginPath();
 
-    ctx.moveTo(points[best[0]].x, points[best[0]].y);
-    for(var i=1; i<best.length; i++) {
-	ctx.lineTo( points[best[i]].x, points[best[i]].y )
+    ctx.moveTo(points[array[0]].x, points[array[0]].y);
+    for(var i=1; i<array.length; i++) {
+	ctx.lineTo( points[array[i]].x, points[array[i]].y )
     }
-    ctx.lineTo(points[best[0]].x, points[best[0]].y);
+    ctx.lineTo(points[array[0]].x, points[array[0]].y);
 
-    //ctx.fill();
     ctx.stroke();
     ctx.closePath();
 }
@@ -101,8 +100,8 @@ function draw() {
 	for(var i=0; i<points.length; i++) {
 	    drawCircle(points[i]);
 	}
-	if( best.length === points.length ) {
-	    drawLines();
+	if(best.length === points.length) {
+	    drawLines(best);
 	}
     }
 }

@@ -27,14 +27,13 @@ function selection() {
     var parents = new Array();
     parents.push(population[currentBest.bestPosition]);
     var initnum = 1;
-    if(currentGeneration > points.length*5) {
-	//MUTATION_PROBABILITY = 0.05;
-	var tem = best.clone();
-	//var tem = population[currentBest.bestPosition].clone();
-	//doMutate(tem);
-	parents.push(tem);
-	initnum = 2;
-    }
+    //if(currentGeneration > points.length*5) {
+    //    MUTATION_PROBABILITY = 0.05;
+    //    var tem = best.clone();
+    //    //var tem = population[currentBest.bestPosition].clone();
+    //    parents.push(tem);
+    //    initnum = 2;
+    //}
     setRoulette();
     for(var i=initnum; i<POPULATION_SIZE; i++) {
 	parents.push(population[wheelOut(Math.random())]);
@@ -106,7 +105,11 @@ function getChild(fun, x, y) {
 function mutation() {
     for(var i=0; i<POPULATION_SIZE; i++) {
 	if(Math.random() < MUTATION_PROBABILITY) {
-	    doMutate(population[i]);
+	    if(Math.random() > 0.5) {
+		population[i] = pushMutate(population[i]);
+	    } else {
+		population[i] = doMutate(population[i]);
+	    }
 	}
     }
 }
@@ -120,6 +123,19 @@ function doMutate(seq) {
     for(var i=0, j=Math.floor(n/2); i<j; i++) {
 	seq.swap(m+i, m+n-i-1);
     }
+    return seq;
+}
+function pushMutate(seq) {
+    mutationTimes++;
+    var m,n;
+    do {
+	m = randomNumber(seq.length>>1);
+	n = randomNumber(seq.length);
+    } while (m>=n)
+    var s1 = seq.slice(0,m);
+    var s2 = seq.slice(m,n)
+    var s3 = seq.slice(n,seq.length);
+    return s2.concat(s1).concat(s3).clone();
 }
 function setBestValue() {
     for(var i=0; i<population.length; i++) {
