@@ -5,14 +5,12 @@ var running;
 var canvasMinX, canvasMinY;
 
 var POPULATION_SIZE;
-//var MAX_ITERATIONS  = 1000;
 var CROSSOVER_PROBABILITY;
 var MUTATION_PROBABILITY;
 var OX_CROSSOVER_RATE;
 var UNCHANGED_GENS;
 
 var mutationTimes;
-
 var dis;
 var bestValue, best;
 var currentGeneration;
@@ -25,6 +23,7 @@ var roulette;
 $(function() {
     init();
     initData();
+    points = data40;
     $('#addRandom_btn').click(function() {
 	addRandomPoints(20);
 	$('#status').text("");
@@ -73,9 +72,7 @@ function init_mouse() {
     });
 }
 function initData() {
-    //points = [];
     running = false;
-
     POPULATION_SIZE = 30;
     CROSSOVER_PROBABILITY = 0.9;
     MUTATION_PROBABILITY  = 0.01;
@@ -111,13 +108,13 @@ function addRandomPoints(number) {
 function drawCircle(point) {
     ctx.fillStyle   = '#000';
     ctx.beginPath();
-    ctx.arc(point.x, point.y, 5, 0, Math.PI*2, true);
+    ctx.arc(point.x, point.y, 3, 0, Math.PI*2, true);
     ctx.closePath();
     ctx.fill();
 }
 function drawLines(array) {
     ctx.strokeStyle = '#f00';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1;
     ctx.beginPath();
 
     ctx.moveTo(points[array[0]].x, points[array[0]].y);

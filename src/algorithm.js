@@ -12,14 +12,15 @@ function GANextGeneration() {
     selection();
     crossover();
     mutation();
-    //if(currentGeneration%(points.length * 5) == 0) {
+    //if(UNCHANGED_GENS > POPULATION_SIZE*10) {
     //    tribulate();
+    //    UNCHANGED_GENS = 0;
     //}
     setBestValue();
 }
 function tribulate() {
-    for(var i=0; i<POPULATION_SIZE; i++) {
-	//for(var i=population.length>>1; i<POPULATION_SIZE; i++) {
+    //for(var i=0; i<POPULATION_SIZE; i++) {
+    for(var i=population.length>>1; i<POPULATION_SIZE; i++) {
 	population[i] = randomIndivial(points.length);
     }	
 }
@@ -27,8 +28,8 @@ function selection() {
     var parents = new Array();
     parents.push(population[currentBest.bestPosition]);
     var initnum = 1;
-    if(UNCHANGED_GENS > points.length*3) {
-	MUTATION_PROBABILITY = 0.05;
+    if(UNCHANGED_GENS > POPULATION_SIZE.length*5) {
+	//MUTATION_PROBABILITY = 0.05;
 	var tem = best.clone();
 	//var tem = population[currentBest.bestPosition].clone();
 	doMutate(tem);
@@ -118,11 +119,11 @@ function doMutate(seq) {
 	m = randomNumber(seq.length);
 	n = randomNumber(seq.length);
     } while (m>=n)
-    // reverse from m to n
-    for(var i=0, j=(n-m+1)>>1; i<j; i++) {
-	seq.swap(m+i, n-i);
-    }
-    return seq;
+	// reverse from m to n
+	for(var i=0, j=(n-m+1)>>1; i<j; i++) {
+	    seq.swap(m+i, n-i);
+	}
+	return seq;
 }
 function pushMutate(seq) {
     mutationTimes++;
@@ -151,7 +152,7 @@ function setBestValue() {
 }
 function getCurrentBest() {
     var bestP = 0,
-	currentBestValue = values[0];
+    currentBestValue = values[0];
 
     for(var i=1; i<population.length; i++) {
 	if(values[i] < currentBestValue) {
@@ -160,7 +161,7 @@ function getCurrentBest() {
 	}
     }
     return {
-	  bestPosition : bestP
+	bestPosition : bestP
 	, bestValue    : currentBestValue
     }
 }
