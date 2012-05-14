@@ -100,21 +100,3 @@ function countDistances() {
 	}
     }
 }
-function getCurrentBest() {
-    var bestP = 0,
-	currentBestValue = values[0];
-
-    for(var i=1; i<population.length; i++) {
-	if(values[i] < currentBestValue) {
-	    currentBestValue = values[i];
-	    bestP = i;
-	}
-    }
-    return {
-	  bestPosition : bestP
-	, bestValue    : currentBestValue
-    }
-}
-function seqCompare(a, b) {
-
-}

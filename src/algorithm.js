@@ -19,7 +19,7 @@ function GANextGeneration() {
 }
 function tribulate() {
     for(var i=0; i<POPULATION_SIZE; i++) {
-    //for(var i=population.length>>1; i<POPULATION_SIZE; i++) {
+	//for(var i=population.length>>1; i<POPULATION_SIZE; i++) {
 	population[i] = randomIndivial(points.length);
     }	
 }
@@ -27,13 +27,16 @@ function selection() {
     var parents = new Array();
     parents.push(population[currentBest.bestPosition]);
     var initnum = 1;
-    //if(currentGeneration > points.length*5) {
-    //    MUTATION_PROBABILITY = 0.05;
-    //    var tem = best.clone();
-    //    //var tem = population[currentBest.bestPosition].clone();
-    //    parents.push(tem);
-    //    initnum = 2;
-    //}
+    if(UNCHANGED_GENS > points.length*3) {
+	MUTATION_PROBABILITY = 0.05;
+	var tem = best.clone();
+	//var tem = population[currentBest.bestPosition].clone();
+	doMutate(tem);
+	parents.push(tem);
+	initnum = 2;
+    } else {
+	MUTATION_PROBABILITY = 0.01;
+    }
     setRoulette();
     for(var i=initnum; i<POPULATION_SIZE; i++) {
 	parents.push(population[wheelOut(Math.random())]);
@@ -89,15 +92,9 @@ function getChild(fun, x, y) {
     while(px.length > 1) {
 	dx = px[fun](px.indexOf(c));
 	dy = py[fun](py.indexOf(c));
-	if(dis[c][dx] < dis[c][dy]) {
-	    px.deleteByValue(c);
-	    py.deleteByValue(c);
-	    c = dx;
-	} else {
-	    px.deleteByValue(c);
-	    py.deleteByValue(c);
-	    c = dy;
-	}
+	px.deleteByValue(c);
+	py.deleteByValue(c);
+	c = dis[c][dx] < dis[c][dy] ? dx : dy;
 	solution.push(c);
     }
     return solution;
@@ -106,9 +103,9 @@ function mutation() {
     for(var i=0; i<POPULATION_SIZE; i++) {
 	if(Math.random() < MUTATION_PROBABILITY) {
 	    //if(Math.random() > 0.5) {
-		//population[i] = pushMutate(population[i]);
+	    //population[i] = pushMutate(population[i]);
 	    //} else {
-		population[i] = doMutate(population[i]);
+	    population[i] = doMutate(population[i]);
 	    //}
 	}
     }
@@ -116,12 +113,14 @@ function mutation() {
 function doMutate(seq) {
     mutationTimes++;
     // m and n refers to the actual index in the array
-    // m range from 0 to length-5, n range from 4...length-m
-    var m = randomNumber(seq.length - 3); //returns a random number from 0 to length-4 (smaller than length-4+1)
-    var n = randomNumber(seq.length - m -4) + 4;//returns a random number from 4 to length-m
-    // reverse from m to m+n-1
-    for(var i=0, j=Math.floor(n/2); i<j; i++) {
-	seq.swap(m+i, m+n-i-1);
+    // m range from 0 to length-2, n range from 2...length-m
+    do {
+	m = randomNumber(seq.length);
+	n = randomNumber(seq.length);
+    } while (m>=n)
+    // reverse from m to n
+    for(var i=0, j=(n-m+1)>>1; i<j; i++) {
+	seq.swap(m+i, n-i);
     }
     return seq;
 }
@@ -132,7 +131,7 @@ function pushMutate(seq) {
 	m = randomNumber(seq.length>>1);
 	n = randomNumber(seq.length);
     } while (m>=n)
-    var s1 = seq.slice(0,m);
+	var s1 = seq.slice(0,m);
     var s2 = seq.slice(m,n)
     var s3 = seq.slice(n,seq.length);
     return s2.concat(s1).concat(s3).clone();
@@ -145,6 +144,24 @@ function setBestValue() {
     if(bestValue === undefined || bestValue > currentBest.bestValue) {
 	best = population[currentBest.bestPosition].clone();
 	bestValue = currentBest.bestValue;
+	UNCHANGED_GENS = 0;
+    } else {
+	UNCHANGED_GENS += 1;
+    }
+}
+function getCurrentBest() {
+    var bestP = 0,
+	currentBestValue = values[0];
+
+    for(var i=1; i<population.length; i++) {
+	if(values[i] < currentBestValue) {
+	    currentBestValue = values[i];
+	    bestP = i;
+	}
+    }
+    return {
+	  bestPosition : bestP
+	, bestValue    : currentBestValue
     }
 }
 function setRoulette() {

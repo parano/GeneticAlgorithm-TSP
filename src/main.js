@@ -9,6 +9,7 @@ var POPULATION_SIZE;
 var CROSSOVER_PROBABILITY;
 var MUTATION_PROBABILITY;
 var OX_CROSSOVER_RATE;
+var UNCHANGED_GENS;
 
 var mutationTimes;
 
@@ -51,8 +52,6 @@ $(function() {
 	}
     });
 });
-
-
 function init() {
     ctx = $('#canvas')[0].getContext("2d");
     WIDTH = $('#canvas').width();
@@ -81,6 +80,7 @@ function initData() {
     CROSSOVER_PROBABILITY = 0.9;
     MUTATION_PROBABILITY  = 0.01;
     OX_CROSSOVER_RATE = 0.03;
+    UNCHANGED_GENS = 0;
     mutationTimes = 0;
 
     bestValue = undefined;
