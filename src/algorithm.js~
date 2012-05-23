@@ -10,24 +10,11 @@ function GANextGeneration() {
   selection();
   crossover();
   mutation();
-
-  if(UNCHANGED_GENS > POPULATION_SIZE) {
-    MUTATION_PROBABILITY = 0.05;
-    if(doPreciseMutate) {
-      best = preciseMutate(best);
-      best = preciseMutate1(best);
-      if(evaluate(best) < bestValue) {
-        bestValue = evaluate(best);
-        UNCHANGED_GENS = 0;
-        doPreciseMutate = true;
-      } else {
-        doPreciseMutate = false;
-      }
-    }
-  } else {
-    doPreciseMutate = 1;
-    MUTATION_PROBABILITY = 0.01;
-  }
+  //if(UNCHANGED_GENS > POPULATION_SIZE) {
+    //MUTATION_PROBABILITY = 0.05;
+    //    tribulate();
+    //    UNCHANGED_GENS = 0;
+  //}
   setBestValue();
 }
 function tribulate() {
@@ -129,20 +116,34 @@ function preciseMutate(orseq) {
       if(v < bestv) {bestv = v, seq = new_seq; };
     }
   }
-  //alert(bestv);
+  alert(bestv);
   return seq;
 }
 function preciseMutate1(orseq) {  
   var seq = orseq.clone();
+  if(Math.random() > 0.5){
+    seq.reverse();
+  }
+  var bestv = evaluate(seq);
+  for(var i=0; i<seq.length-1; i++) {
+    var new_seq = seq.swap(i, i+1);
+    var v = evaluate(new_seq);
+    if(v < bestv) {bestv = v, seq = new_seq; };
+  }
+  alert(bestv);
+  return seq;
+}
+function anotherPreciseMutate(orseq) {
+  var seq = orseq.slice(0);
   var bestv = evaluate(seq);
 
-  for(var i=0; i<seq.length-1; i++) {
-    var new_seq = seq.clone();
+  for(var i=0; i< orseq.length-1; i++) {
+    var new_seq = seq.clone()
     new_seq.swap(i, i+1);
     var v = evaluate(new_seq);
     if(v < bestv) {bestv = v, seq = new_seq; };
   }
-  //alert(bestv);
+  alert(bestv);
   return seq;
 }
 function swap_seq(seq, p0, p1, q0, q1) {

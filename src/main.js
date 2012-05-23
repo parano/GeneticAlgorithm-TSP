@@ -3,6 +3,7 @@ var WIDTH, HEIGHT;
 var points = [];
 var running;
 var canvasMinX, canvasMinY;
+var doPreciseMutate;
 
 var POPULATION_SIZE;
 var ELITE_RATE;
@@ -81,6 +82,7 @@ function initData() {
   //OX_CROSSOVER_RATE = 0.05;
   UNCHANGED_GENS = 0;
   mutationTimes = 0;
+  doPreciseMutate = true;
 
   bestValue = undefined;
   best = [];
