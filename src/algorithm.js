@@ -11,23 +11,23 @@ function GANextGeneration() {
   crossover();
   mutation();
 
-  if(UNCHANGED_GENS > POPULATION_SIZE) {
-    MUTATION_PROBABILITY = 0.05;
-    if(doPreciseMutate) {
-      best = preciseMutate(best);
-      best = preciseMutate1(best);
-      if(evaluate(best) < bestValue) {
-        bestValue = evaluate(best);
-        UNCHANGED_GENS = 0;
-        doPreciseMutate = true;
-      } else {
-        doPreciseMutate = false;
-      }
-    }
-  } else {
-    doPreciseMutate = 1;
-    MUTATION_PROBABILITY = 0.01;
-  }
+  //if(UNCHANGED_GENS > POPULATION_SIZE + ~~(points.length/10)) {
+    //MUTATION_PROBABILITY = 0.05;
+    //if(doPreciseMutate) {
+    //  best = preciseMutate(best);
+    //  best = preciseMutate1(best);
+    //  if(evaluate(best) < bestValue) {
+    //    bestValue = evaluate(best);
+    //    UNCHANGED_GENS = 0;
+    //    doPreciseMutate = true;
+    //  } else {
+    //    doPreciseMutate = false;
+    //  }
+    //}
+  //} else {
+    //doPreciseMutate = 1;
+    //MUTATION_PROBABILITY = 0.01;
+  //}
   setBestValue();
 }
 function tribulate() {
@@ -38,9 +38,10 @@ function tribulate() {
 }
 function selection() {
   var parents = new Array();
-  var initnum = 3;
+  var initnum = 4;
   parents.push(population[currentBest.bestPosition]);
   parents.push(doMutate(best.clone()));
+  parents.push(pushMutate(best.clone()));
   parents.push(best.clone());
 
   setRoulette();
@@ -107,11 +108,11 @@ function getChild(fun, x, y) {
 function mutation() {
   for(var i=0; i<POPULATION_SIZE; i++) {
     if(Math.random() < MUTATION_PROBABILITY) {
-      //if(Math.random() > 0.5) {
-      //population[i] = pushMutate(population[i]);
-      //} else {
-      population[i] = doMutate(population[i]);
-      //}
+      if(Math.random() > 0.5) {
+        population[i] = pushMutate(population[i]);
+      } else {
+        population[i] = doMutate(population[i]);
+      }
       i--;
     }
   }
@@ -153,10 +154,6 @@ function swap_seq(seq, p0, p1, q0, q1) {
   var seq3 = seq.slice(q1, seq.length);
   return seq1.concat(seq2).concat(seq3);
 }
-function mutateForTrip(orseq) {
-  var seq = orseq.clone();
-  var bestv = evaluate(orseq);
-}
 function doMutate(seq) {
   mutationTimes++;
   // m and n refers to the actual index in the array
@@ -178,7 +175,8 @@ function pushMutate(seq) {
     m = randomNumber(seq.length>>1);
     n = randomNumber(seq.length);
   } while (m>=n)
-    var s1 = seq.slice(0,m);
+
+  var s1 = seq.slice(0,m);
   var s2 = seq.slice(m,n)
   var s3 = seq.slice(n,seq.length);
   return s2.concat(s1).concat(s3).clone();
