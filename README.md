@@ -4,4 +4,6 @@ This project is my implementation and visualization of an improved Genetic Algor
 
 Here is an online demo for this project hosted on github: [demo](http://parano.github.io/GeneticAlgorithm-Solving-TSP/)
 
+The detailed description of the algorithm could be found [here](doc/Genetic-Algorithm-For-Solving-TSP-Chaoyu.pdf)
 
+![preview](doc/GATSP.png)
