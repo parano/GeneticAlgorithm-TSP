@@ -47,6 +47,10 @@ $(function() {
   });
   $('#stop_btn').click(function() {
     if(running === false && currentGeneration !== 0){
+      if(best.length !== points.length) {
+          initData();
+          GAInitialize();
+      }
       running = true;
     } else {
       running = false;
