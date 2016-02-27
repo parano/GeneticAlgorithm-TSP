@@ -1,4 +1,5 @@
-#An Improved Genetic Algorithm 
-# for Solving Travelling Salesman Problem
+#Genetic Algorithm TSP
 
-Demo: [http://errno.me/GeneticAlgorithm-Solving-TSP/](http://errno.me/GeneticAlgorithm-Solving-TSP/)
+This is an experiment of applying Genetic Algorithm to Travelling Salesman Problem, as well as visualizing the algorithm.
+
+See the demo [here](http://parano.github.io/GeneticAlgorithm-TSP/)
